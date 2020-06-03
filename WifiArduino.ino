@@ -10,10 +10,10 @@
 const char* ssid = "123"; 
 const char* password = "00000000";
 
-const char* ssid2 = "JetSoft_1F"; 
-const char* password2 = "0973808698";
+const char* ssid2 = "TPLink-BEE"; 
+const char* password2 = "ncyumilbee7739";
 
-const char* server    = "192.168.1.25"; //myserver 
+const char* server    = "59.127.238.221"; //myserver 
 
 SoftwareSerial ESP8266(3,4);
 unsigned long previousMillis = 0;
@@ -191,7 +191,7 @@ void loop(void) {
         Serial.print("進行WiFi設定!\r\n");
         do{
             Serial.println("WiFi 連接中 ...");
-            WiFi_Status = WiFi.begin(ssid2, password2);
+            WiFi_Status = WiFi.begin(ssid, password);
             delay(500); 
         } while (WiFi_Status != WL_CONNECTED);
         
