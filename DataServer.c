@@ -1,33 +1,37 @@
 #include <stdio.h>
 #include <string.h>
+#include <fstream>
 #include <winsock.h>
 #include <time.h>
-#define MAXLINE 1024    /* ¦r¦ê½w½Ä°Ïªø«× */
-
-void main()
+#define MAXLINE 1024    /* å­—ä¸²ç·©è¡å€é•·åº¦ */
+using namespace std;
+int main()
 {
-	SOCKET	serv_sd, cli_sd;        /* socket ´y­z¤l */
+	SOCKET	serv_sd, cli_sd;        /* socket æè¿°å­ */
   	int   	cli_len, n;
   	char  	str[MAXLINE],str_r[MAXLINE],str_r2[MAXLINE],pass[50];
-
+    char*    num;
+    char*    rssi;
   	struct 	sockaddr_in   	serv, cli;
+  	fstream  fout;
+  	fout.open("RssiData.txt",ios::app|ios::out);
   	WSADATA wsadata;
 
-    WSAStartup(0x101, &wsadata); //©I¥s WSAStartup() µù¥U WinSock DLL ªº¨Ï¥Î
+    WSAStartup(0x101, &wsadata); //å‘¼å« WSAStartup() è¨»å†Š WinSock DLL çš„ä½¿ç”¨
     while(1)
     {
-        serv_sd=socket(AF_INET, SOCK_STREAM, 0);// ¶}±Ò TCP socket
+        serv_sd=socket(AF_INET, SOCK_STREAM, 0);// é–‹å•Ÿ TCP socket
 
-        //«ü©w socket ªº IP ¦ì§}©M port number
+        //æŒ‡å®š socket çš„ IP ä½å€å’Œ port number
         serv.sin_family      = AF_INET;
         serv.sin_addr.s_addr = 0;
-        serv.sin_port        = htons(5678);	// «ü©wport
+        serv.sin_port        = htons(5678);	// æŒ‡å®šport
 
         //UTC
         //bind(serv_sd, &serv, sizeof(serv)) ;
         bind(serv_sd, (LPSOCKADDR) &serv, sizeof(serv));
 
-        listen(serv_sd, 5) ; //©I¥s listen() ¨Ï socket ¶i¤J¡uºÊÅ¥¡vª¬ºA
+        listen(serv_sd, 5) ; //å‘¼å« listen() ä½¿ socket é€²å…¥ã€Œç›£è½ã€ç‹€æ…‹
 
         cli_len = sizeof(cli);
         printf("server waits for client\n");
@@ -39,12 +43,15 @@ void main()
         {
 
 
-            n=recv(cli_sd, str_r, MAXLINE, 0); //¥Ñserver±µ¦¬
-            printf("server recv: %s (%d bytes)\n",str_r,n);
+            n=recv(cli_sd, str_r, MAXLINE, 0); //ç”±serveræŽ¥æ”¶
+            num = strtok(str_r,".");
+            rssi = strtok(NULL,".");
+            printf("ç¬¬%sç­†è³‡æ–™-> RSSI = %s \n",num,rssi);
+            fout << "No." << num << " rssi = " << rssi << "\n";
             x+=1;
         }
 
-        //µ²§ô WinSock DLL ªº¨Ï¥Î
+        //çµæŸ WinSock DLL çš„ä½¿ç”¨
         closesocket(serv_sd);
         closesocket(cli_sd);
     }
